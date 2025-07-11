@@ -11,3 +11,5 @@ jupyter>=1.0.0
 ipykernel>=6.27.1
 requests>=2.31.0
 kaggle>=1.5.16
+geopy>=2.3.0
+shapely>=2.0.2

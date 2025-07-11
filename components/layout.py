@@ -3,6 +3,7 @@ from components.sidebar import get_sidebar
 from components.global_map import get_global_map
 from components.scatter_section import get_scatter_section
 from components.timeseries_section import get_timeseries_section
+from components.risk_map import get_risk_map
 
 def create_layout(data_processor):
     return html.Div([
