@@ -9,7 +9,8 @@ def get_sidebar():
                 html.Div([
                     html.Button("Global Map", id='btn-map', style=get_button_style(selected=True)),
                     html.Button("Depth vs Magnitude Scatter Plot", id='btn-scatter', style=get_button_style()),
-                    html.Button("Time Series Analysis", id='btn-timeseries', style=get_button_style())
+                    html.Button("Time Series Analysis", id='btn-timeseries', style=get_button_style()),
+                    html.Button("Global Risk Map", id='btn-riskmap', style=get_button_style())
                 ])
             ], style={'padding': '20px'})
         ], style={'padding': '20px'})
