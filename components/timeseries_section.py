@@ -1,17 +1,35 @@
 from dash import html, dcc
+import pandas as pd
 
 def get_timeseries_section(data_processor):
-    years = sorted(data_processor.get_filtered_data()['year'].unique())
-
+    df = data_processor.get_filtered_data()
+    years = sorted(df['year'].dropna().unique())
+    countries = sorted(df['country'].dropna().unique())
+    
     return html.Div([
         html.H3("Earthquake Time Series Analysis", style={'color': '#2c3e50'}),
+
+        html.Div([
+            html.Label("Select View Mode:", style={'color': '#2c3e50', 'fontWeight': 'bold'}),
+            dcc.RadioItems(
+                id='timeseries-view-mode',
+                options=[
+                    {'label': 'Single Year View', 'value': 'single'},
+                    {'label': 'Year Range View', 'value': 'range'}
+                ],
+                value='single',
+                labelStyle={'display': 'inline-block', 'marginRight': '20px'}
+            )
+        ], style={'marginBottom': '15px'}),
+
+        # Single Year Controls
         html.Div([
             html.Div([
                 html.Label("Year:", style={'color': '#2c3e50', 'fontWeight': 'bold'}),
                 dcc.Dropdown(
                     id='timeseries-year',
-                    options=[{'label': str(y), 'value': y} for y in years],
-                    value=2023
+                    options=[{'label': str(y), 'value': int(y)} for y in years],
+                    value=int(years[-1]) if years else 2023
                 )
             ], style={'width': '48%', 'display': 'inline-block', 'marginRight': '2%'}),
             html.Div([
@@ -27,6 +45,43 @@ def get_timeseries_section(data_processor):
                     value='all'
                 )
             ], style={'width': '48%', 'display': 'inline-block'})
+        ], id='single-controls', style={'marginBottom': '20px'}),
+
+        # Year Range Controls (hidden by default)
+        html.Div([
+            html.Label("Year Range:", style={'color': '#2c3e50', 'fontWeight': 'bold'}),
+            dcc.RangeSlider(
+                id='timeseries-year-range',
+                min=int(min(years)),
+                max=int(max(years)),
+                step=1,
+                value=[int(years[-2]), int(years[-1])] if len(years) >= 2 else [2022, 2023],
+                marks={int(y): str(y) for y in years[-5::2]},
+                tooltip={"placement": "bottom", "always_visible": False}
+            )
+        ], id='range-controls', style={'marginBottom': '20px', 'display': 'none'}),
+
+        html.Div([
+            html.Label("Country (optional):", style={'color': '#2c3e50', 'fontWeight': 'bold'}),
+            dcc.Dropdown(
+                id='timeseries-country',
+                options=[{'label': c, 'value': c} for c in countries],
+                placeholder='Select Country (Optional)'
+            )
         ], style={'marginBottom': '20px'}),
+
+        html.Div([
+            html.Label("Show Options:", style={'color': '#2c3e50', 'fontWeight': 'bold'}),
+            dcc.Checklist(
+                id='timeseries-options',
+                options=[
+                    {'label': 'Cumulative View', 'value': 'cumulative'},
+                    {'label': '5-Year Moving Average', 'value': 'moving_avg'}
+                ],
+                value=[],
+                labelStyle={'display': 'inline-block', 'marginRight': '20px'}
+            )
+        ], style={'marginBottom': '20px'}),
+
         dcc.Graph(id='timeseries-plot', style={'height': '500px'})
     ], id='timeseries-section', style={'marginBottom': '30px'})

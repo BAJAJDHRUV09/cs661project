@@ -11,7 +11,6 @@ data_processor = globals.data_processor
 app.layout = create_layout(data_processor)
 
 # Register callbacks
-from callbacks import layout_toggle, navigation, map_callbacks, scatter_callbacks, timeseries_callbacks , riskmap_callbacks, content_switch
-
+from callbacks import layout_toggle, navigation, map_callbacks, scatter_callbacks, timeseries_callbacks , riskmap_callbacks, content_switch , timeseries_toggle 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=8050)
