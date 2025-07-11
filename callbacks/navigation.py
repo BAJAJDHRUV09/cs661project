@@ -3,12 +3,14 @@ from dash import callback, Output, Input, callback_context
 @callback(
     [Output('btn-map', 'style'),
      Output('btn-scatter', 'style'),
-     Output('btn-timeseries', 'style')],
+     Output('btn-timeseries', 'style'),
+     Output('btn-riskmap', 'style')],
     [Input('btn-map', 'n_clicks'),
      Input('btn-scatter', 'n_clicks'),
-     Input('btn-timeseries', 'n_clicks')]
+     Input('btn-timeseries', 'n_clicks'),
+     Input('btn-riskmap', 'n_clicks')]
 )
-def highlight_active_button(b1, b2, b3):
+def highlight_active_button(b1, b2, b3, b4):
     ctx = callback_context
     triggered = ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else 'btn-map'
 
@@ -25,4 +27,9 @@ def highlight_active_button(b1, b2, b3):
         'fontSize': '14px'
     }
 
-    return style(triggered == 'btn-map'), style(triggered == 'btn-scatter'), style(triggered == 'btn-timeseries')
+    return (
+        style(triggered == 'btn-map'),
+        style(triggered == 'btn-scatter'),
+        style(triggered == 'btn-timeseries'),
+        style(triggered == 'btn-riskmap')  
+    )
