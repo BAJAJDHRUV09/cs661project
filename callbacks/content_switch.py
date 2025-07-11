@@ -5,14 +5,12 @@ from components.timeseries_section import get_timeseries_section
 from components.risk_map import get_risk_map
 import globals
 
+button_ids = globals.button_ids
 @callback(
     Output("main-plot-content", "children"),
-    [Input("btn-map", "n_clicks"),
-     Input("btn-scatter", "n_clicks"),
-     Input("btn-timeseries", "n_clicks"),
-     Input("btn-riskmap", "n_clicks")]
+    [Input(btn_id, "n_clicks") for btn_id in button_ids]
 )
-def update_main_content(b1, b2, b3, b4):
+def update_main_content(*args):
     ctx = callback_context
     triggered = ctx.triggered[0]['prop_id'].split('.')[0] if ctx.triggered else 'btn-map'
     data_processor = globals.data_processor  # Access the global data processor

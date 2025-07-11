@@ -1,0 +1,44 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Jupyter Notebook Checkpoints (in case any added)
+.ipynb_checkpoints/
+
+# VSCode settings
+.vscode/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Compiled object files, binaries, etc.
+*.o
+*.so
+*.dll
+*.exe
+*.pvc
+# Python egg info
+*.egg-info/
+dist/
+build/
+
+# Dataset files (optional, if dataset is large or shouldn’t be tracked)
+Significant Earthquake Dataset 1900-*
+
+# Environment files (optional)
+.env
+.env.*
+
+# Test cache
+test_*.pyc
