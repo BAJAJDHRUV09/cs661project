@@ -2,8 +2,16 @@ from dash import html, dcc
 
 def get_scatter_section(data_processor):
     countries = [{'label': 'All Countries', 'value': 'all'}] + [
-        {'label': str(c), 'value': str(c)} for c in sorted(data_processor.get_filtered_data()['Place'].dropna().unique())
-    ]
+    {'label': country, 'value': country}
+    for country in sorted(
+        data_processor.get_filtered_data()['country']
+        .dropna()
+        .unique()
+    )
+]
+
+
+
     
     return html.Div([
         html.H3("Depth vs Magnitude Scatter Plot", style={'color': '#2c3e50'}),
@@ -31,5 +39,6 @@ def get_scatter_section(data_processor):
                 value='all'
             )
         ], style={'marginBottom': '20px'}),
-        dcc.Graph(id='scatter-plot', style={'height': '500px'})
+        dcc.Graph(id='scatter-plot', style={'height': '500px'}),
+        html.Div(id='depth-summary', style={'marginTop': '15px', 'fontWeight': 'bold', 'color': '#2c3e50'})
     ], id='scatter-section', style={'marginBottom': '30px'})

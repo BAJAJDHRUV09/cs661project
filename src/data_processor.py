@@ -71,7 +71,26 @@ class DataProcessor:
         )
         
         # Extract country from place
-        self.processed_data['country'] = self.processed_data['Place'].str.extract(r'([A-Za-z\s]+)')[0]
+        def extract_country(place):
+            if not isinstance(place, str):
+                return None
+            if ',' in place:
+                return place.split(',')[-1].strip()
+            
+            # Manual mapping for known named earthquakes
+            place_lower = place.lower()
+            if "assam" in place_lower or "tibet" in place_lower:
+                return "India"
+            elif "ecuador" in place_lower:
+                return "Ecuador"
+            elif "valdivia" in place_lower or "chilean" in place_lower:
+                return "Chile"
+            elif "sumatra" in place_lower or "andaman" in place_lower:
+                return "Indonesia"
+            
+            return None  # Or "Unknown"
+        self.processed_data['country'] = self.processed_data['Place'].apply(extract_country)
+
         
         # Filter out invalid coordinates
         self.processed_data = self.processed_data[
@@ -103,7 +122,7 @@ class DataProcessor:
             data = data[data['mag'].between(magnitude_range[0], magnitude_range[1])]
         
         # Filter by country
-        if country:
+        if country and country != 'all':
             data = data[data['country'].str.contains(country, case=False, na=False)]
         
         return data
