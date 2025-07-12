@@ -3,6 +3,8 @@ from dash import callback
 from components.layout import create_layout
 from src.data_processor import DataProcessor
 import globals
+import warnings
+warnings.filterwarnings('ignore')
 
 app = dash.Dash(__name__, title="Earthquake Data Visualization")
 app.config.suppress_callback_exceptions = True

@@ -32,16 +32,44 @@ def create_global_earthquake_map(data_processor,
     # Create the base map with country boundaries
     fig = go.Figure()
     
+    # Add a background layer to ensure complete coverage
+    # This creates a full-world rectangle to eliminate any white regions
+    fig.add_trace(go.Scattergeo(
+        lon=[-180, 180, 180, -180, -180],
+        lat=[-90, -90, 90, 90, -90],
+        mode='lines',
+        line=dict(color='#282a36', width=0),
+        fill='toself',
+        fillcolor='#282a36',  # Dracula background
+        opacity=1.0,
+        showlegend=False,
+        hoverinfo='skip'
+    ))
+    
     if geojson_data:
-        # Add country boundaries
+        # Add filled land areas to eliminate white gaps
         for feature in geojson_data['features']:
             coordinates = feature['geometry']['coordinates']
             
             if feature['geometry']['type'] == 'Polygon':
-                # Single polygon
+                # Single polygon - add filled area first
                 lons = [coord[0] for coord in coordinates[0]]
                 lats = [coord[1] for coord in coordinates[0]]
                 
+                # Add filled land area
+                fig.add_trace(go.Scattergeo(
+                    lon=lons,
+                    lat=lats,
+                    mode='lines',
+                    line=dict(color='#34495e', width=0.8),
+                    fill='toself',
+                    fillcolor='#282a36',  # Dracula background color
+                    opacity=0.3,
+                    showlegend=False,
+                    hoverinfo='skip'
+                ))
+                
+                # Add boundary line on top
                 fig.add_trace(go.Scattergeo(
                     lon=lons,
                     lat=lats,
@@ -50,12 +78,27 @@ def create_global_earthquake_map(data_processor,
                     showlegend=False,
                     hoverinfo='skip'
                 ))
+                
             elif feature['geometry']['type'] == 'MultiPolygon':
                 # Multiple polygons
                 for polygon in coordinates:
                     lons = [coord[0] for coord in polygon[0]]
                     lats = [coord[1] for coord in polygon[0]]
                     
+                    # Add filled land area
+                    fig.add_trace(go.Scattergeo(
+                        lon=lons,
+                        lat=lats,
+                        mode='lines',
+                        line=dict(color='#34495e', width=0.8),
+                        fill='toself',
+                        fillcolor='#282a36',  # Dracula background color
+                        opacity=0.3,
+                        showlegend=False,
+                        hoverinfo='skip'
+                    ))
+                    
+                    # Add boundary line on top
                     fig.add_trace(go.Scattergeo(
                         lon=lons,
                         lat=lats,
@@ -109,22 +152,41 @@ def create_global_earthquake_map(data_processor,
                 hoverinfo='skip'
             ))
             
-            # Add epicentre point with sophisticated styling
+            # Add epicentre point with minimal styling - just enough to identify location
             fig.add_trace(go.Scattergeo(
                 lon=[lon_center],
                 lat=[lat_center],
                 mode='markers',
                 marker=dict(
-                    size=mag * 0.8 + 3,  # Much smaller size based on magnitude
+                    size=2,  # Very small fixed size - just to identify epicenter
                     color=color,
-                    opacity=0.7,
-                    line=dict(color='white', width=1),
+                    opacity=0.9,
+                    line=dict(color='white', width=0.5),
                     symbol='circle'
                 ),
                 text=f"<b>{eq['Place']}</b><br>Magnitude: {mag}<br>Impact Radius: ~{int(radius)} km<br>Year: {eq['year']}",
                 hoverinfo='text',
                 showlegend=False
             ))
+    
+    # Add legend traces for magnitude color ranges
+    legend_colors = ['#fff7bc', '#fec44f', '#fe9929', '#d7301f', '#b30000']
+    legend_labels = ['< 6.0', '6.0-6.5', '6.5-7.0', '7.0-7.5', '≥ 7.5']
+    
+    for i, (color, label) in enumerate(zip(legend_colors, legend_labels)):
+        fig.add_trace(go.Scattergeo(
+            lon=[None],  # Invisible trace for legend only
+            lat=[None],
+            mode='markers',
+            marker=dict(
+                size=8,
+                color=color,
+                symbol='circle'
+            ),
+            name=f'Magnitude {label}',
+            showlegend=True,
+            hoverinfo='skip'
+        ))
     
     # Update layout with sophisticated styling
     fig.update_layout(
@@ -134,7 +196,7 @@ def create_global_earthquake_map(data_processor,
             coastlinecolor='#6272a4',  # Dracula blue
             coastlinewidth=1.5,
             showland=True,
-            landcolor='#282a36',  # Dracula background
+            landcolor='#282a36',  # Dracula background - ensures complete land coverage
             showocean=True,
             oceancolor='#1e1f29',  # Dracula darker background
             projection_type='equirectangular',
@@ -157,18 +219,38 @@ def create_global_earthquake_map(data_processor,
             # Set fixed aspect ratio and prevent shrinking
             domain=dict(x=[0, 1], y=[0, 1]),
             # Set minimum resolution to prevent excessive zoom out
-            resolution=110
+            resolution=110,
+            # Additional settings to ensure complete coverage
+            showlakes=True,
+            lakecolor='#1e1f29',  # Same as ocean
+            showrivers=True,
+            rivercolor='#6272a4',  # Dracula blue
+            riverwidth=0.5
         ),
         height=700,  # Fixed height
         width=None,  # Auto-width to fit container
-        margin=dict(l=0, r=0, t=0, b=0),
+        margin=dict(l=0, r=0, t=0, b=80),  # Increased bottom margin for legend outside plot
         paper_bgcolor='#282a36',  # Dracula background
         plot_bgcolor='#282a36',  # Dracula background
         font=dict(family="Arial, sans-serif", size=12, color='#f8f8f2'),  # Dracula foreground
         # Disable autosize to prevent shrinking
         autosize=False,
         # Better hover styling
-        hovermode='closest'
+        hovermode='closest',
+        # Legend styling - small and at bottom, outside plot area
+        showlegend=True,
+        legend=dict(
+            orientation="h",
+            yanchor="top",
+            y=-0.15,  # Below the plot area
+            xanchor="center",
+            x=0.5,  # Center horizontally
+            bgcolor='rgba(40, 42, 54, 0.9)',  # Semi-transparent Dracula background
+            bordercolor='#6272a4',  # Dracula blue border
+            borderwidth=1,
+            font=dict(size=10, color='#f8f8f2'),  # Smaller font
+            itemsizing='constant'  # Consistent marker sizes
+        )
     )
     
     return fig

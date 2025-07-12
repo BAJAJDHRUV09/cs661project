@@ -86,5 +86,15 @@ def get_timeseries_section(data_processor):
             )
         ], style={'marginBottom': '20px'}),
 
-        dcc.Graph(id='timeseries-plot', style={'height': '500px'})
+        # First plot - Earthquake Count Metrics
+        html.Div([
+            html.H4("Earthquake Count Trends", style={'color': '#2c3e50', 'marginBottom': '10px'}),
+            dcc.Graph(id='timeseries-count-plot', style={'height': '600px'})
+        ], style={'marginBottom': '30px'}),
+
+        # Second plot - Magnitude Data
+        html.Div([
+            html.H4("Magnitude Trends", style={'color': '#2c3e50', 'marginBottom': '10px'}),
+            dcc.Graph(id='timeseries-magnitude-plot', style={'height': '600px'})
+        ], style={'marginBottom': '30px'})
     ], id='timeseries-section', style={'marginBottom': '30px'})
