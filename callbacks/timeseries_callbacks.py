@@ -42,5 +42,6 @@ def update_timeseries_plot(mode, year, month, year_range, country, options):
         end_date=end_date,
         country=country,
         show_moving_avg=show_moving_avg,
-        show_cumulative=show_cumulative
+        show_cumulative=show_cumulative,
+        mode=mode 
     )

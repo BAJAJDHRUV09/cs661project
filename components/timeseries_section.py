@@ -1,11 +1,14 @@
 from dash import html, dcc
 import pandas as pd
-
+import numpy as np
 def get_timeseries_section(data_processor):
     df = data_processor.get_filtered_data()
     years = sorted(df['year'].dropna().unique())
     countries = sorted(df['country'].dropna().unique())
-    
+    year_max = max(years) if years else 2023 
+    year_min = min(years) if years else 1900
+    num_marks = 7
+    mark_years = np.linspace(year_min, year_max, num=num_marks, dtype=int)
     return html.Div([
         html.H3("Earthquake Time Series Analysis", style={'color': '#2c3e50'}),
 
@@ -47,7 +50,7 @@ def get_timeseries_section(data_processor):
             ], style={'width': '48%', 'display': 'inline-block'})
         ], id='single-controls', style={'marginBottom': '20px'}),
 
-        # Year Range Controls (hidden by default)
+        # Year Range Controls (hidden by default) 
         html.Div([
             html.Label("Year Range:", style={'color': '#2c3e50', 'fontWeight': 'bold'}),
             dcc.RangeSlider(
@@ -55,8 +58,8 @@ def get_timeseries_section(data_processor):
                 min=int(min(years)),
                 max=int(max(years)),
                 step=1,
-                value=[int(years[-2]), int(years[-1])] if len(years) >= 2 else [2022, 2023],
-                marks={int(y): str(y) for y in years[-5::2]},
+                value=[year_max - 5, year_max],  # default range (last 5 years)
+                marks={int(y): str(y) for y in mark_years},
                 tooltip={"placement": "bottom", "always_visible": False}
             )
         ], id='range-controls', style={'marginBottom': '20px', 'display': 'none'}),

@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 from typing import Optional
 import pandas as pd
+
 def create_time_series_plot(
     data_processor,
     magnitude_filter: str = 'all',
@@ -8,12 +9,12 @@ def create_time_series_plot(
     end_date: Optional[str] = None,
     country: Optional[str] = None,
     show_moving_avg: bool = False,
-    show_cumulative: bool = False
+    show_cumulative: bool = False,
+    mode: str = 'single'  # <-- new
 ) -> go.Figure:
     """
     Create enhanced time series plot showing earthquake trends.
     """
-    # Get time series data
     time_series_data = data_processor.get_time_series_data(
         magnitude_filter, start_date, end_date, country
     )
@@ -34,18 +35,14 @@ def create_time_series_plot(
         )
         return fig
 
-    # Apply cumulative if requested
     if show_cumulative:
         time_series_data['count'] = time_series_data['count'].cumsum()
 
-    # Calculate 5-year moving average if requested
     if show_moving_avg:
         time_series_data['count_ma'] = time_series_data['count'].rolling(window=5, min_periods=1).mean()
 
-    # Create plot
     fig = go.Figure()
 
-    # Earthquake count trace
     fig.add_trace(go.Scatter(
         x=time_series_data['date'],
         y=time_series_data['count'],
@@ -55,7 +52,6 @@ def create_time_series_plot(
         marker=dict(size=4)
     ))
 
-    # Moving average trace
     if show_moving_avg:
         fig.add_trace(go.Scatter(
             x=time_series_data['date'],
@@ -65,7 +61,6 @@ def create_time_series_plot(
             line=dict(color='blue', dash='dot')
         ))
 
-    # Average magnitude trace
     fig.add_trace(go.Scatter(
         x=time_series_data['date'],
         y=time_series_data['avg_magnitude'],
@@ -75,12 +70,9 @@ def create_time_series_plot(
         line=dict(color='#f39c12', width=2, dash='dash')
     ))
 
-    # Highlight peak avg magnitude year
     max_mag_row = time_series_data.loc[time_series_data['avg_magnitude'].idxmax()]
-    
     peak_date = pd.to_datetime(max_mag_row['date']).to_pydatetime()
 
-    # Add vertical line
     fig.add_shape(
         type="line",
         x0=peak_date,
@@ -92,7 +84,6 @@ def create_time_series_plot(
         line=dict(color="gray", dash="dot"),
     )
 
-    # Add annotation manually
     fig.add_annotation(
         x=peak_date,
         y=1,
@@ -103,7 +94,6 @@ def create_time_series_plot(
         arrowhead=2,
         yanchor="bottom"
     )
-
 
     # Title formatting
     title = "Earthquake Trends Over Time"
@@ -118,7 +108,7 @@ def create_time_series_plot(
     if magnitude_filter in label_map:
         title += f" ({label_map[magnitude_filter]})"
 
-    # Layout setup
+    # Layout
     fig.update_layout(
         title=title,
         xaxis_title="Date",
@@ -141,7 +131,35 @@ def create_time_series_plot(
         )
     )
 
-    # Improve x-axis tick format (Year only)
-    fig.update_xaxes(dtick="M12", tickformat="%Y")
+    # 🧠 Final Tick Fix
+    if mode == 'single':
+        fig.update_xaxes(
+            dtick="M1",
+            tickformat="%b",  # Jan, Feb...
+            tickangle=0
+        )
+    else:
+        # Range mode — cap ticks to 10
+        dates = time_series_data['date']
+        if not dates.empty:
+            min_year = dates.min().year
+            max_year = dates.max().year
+            span = max_year - min_year + 1
+            num_ticks = min(span, 10)
+
+            tick_years = pd.Series(pd.date_range(
+                start=f"{min_year}-01-01",
+                end=f"{max_year}-12-31",
+                periods=num_ticks
+            )).dt.year.unique()
+
+            tick_vals = [pd.Timestamp(f"{y}-01-01") for y in tick_years]
+            tick_texts = [str(y) for y in tick_years]
+
+            fig.update_xaxes(
+                tickvals=tick_vals,
+                ticktext=tick_texts,
+                tickangle=45
+            )
 
     return fig
