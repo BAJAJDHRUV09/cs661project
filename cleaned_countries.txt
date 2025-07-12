@@ -1,0 +1,192 @@
+AK
+Afghanistan
+Alaska
+Albania
+Algeria
+American Samoa
+Angola
+Anguilla
+Antigua and Barbuda
+Argentina
+Arizona
+Armenia
+Australia
+Australia region
+Azerbaijan
+Bangladesh
+Barbados
+Belgium
+Bhutan
+Bolivia
+Bosnia and Herzegovina
+Botswana
+Brazil
+Bulgaria
+Burundi
+CA
+CA Earthquake
+Cabo Verde
+California
+California Earthquake
+Canada
+Canada region
+Cayman Islands
+Chile
+China
+Colombia
+Colorado
+Comoros
+Costa Rica
+Croatia
+Cuba
+Cyprus
+Democratic Republic of the Congo
+Djibouti
+Dominica
+Dominican Republic
+Ecuador
+Ecuador region
+Egypt
+El Salvador
+Eritrea
+Ethiopia
+Federated States of Micronesia
+Fiji
+France
+French Polynesia region
+Gabon
+Georgia
+Germany
+Ghana
+Greece
+Grenada
+Guadeloupe
+Guam
+Guatemala
+Guinea
+Guyana
+Haiti
+Hawaii
+Honduras
+Hungary
+Iceland
+Idaho
+India
+India region
+Indonesia
+Iran
+Iraq
+Israel
+Italy
+Jamaica
+Japan
+Japan region
+Jordan
+Kazakhstan
+Kenya
+Kiribati region
+Kosovo
+Kyrgyzstan
+Laos
+Lebanon
+Lesotho
+Libya
+MX
+Madagascar
+Maine
+Malawi
+Malaysia
+Maldives
+Martinique
+Mauritius
+Mayotte
+Mexico
+Micronesia
+Mongolia
+Montana
+Montenegro
+Montserrat
+Morocco
+Mozambique
+Myanmar
+NV
+NV Earthquake
+Nepal
+Nevada
+New Caledonia
+New Hampshire
+New Zealand
+New Zealand region
+Nicaragua
+North Korea
+North Macedonia
+Northern Mariana Islands
+Norway
+Oklahoma
+Oman
+Oregon
+Pakistan
+Palau
+Palestinian Territory
+Panama
+Papua New Guinea
+Peru
+Philippines
+Poland
+Portugal
+Puerto Rico
+Republic of the Congo
+Romania
+Russia
+Russia region
+Rwanda
+Saint Helena
+Saint Kitts and Nevis
+Saint Lucia
+Saint Pierre and Miquelon
+Saint Vincent and the Grenadines
+Samoa
+Sao Tome and Principe
+Saudi Arabia
+Senegal
+Serbia
+Slovakia
+Slovenia
+Solomon Islands
+Somalia
+South Africa
+South Korea
+South Sudan
+Spain
+Sri Lanka
+Sudan
+Svalbard and Jan Mayen
+Switzerland
+Syria
+Taiwan
+Tajikistan
+Tanzania
+Texas
+Thailand
+Timor Leste
+Tonga
+Trinidad and Tobago
+Turkey
+Turkmenistan
+Tuvalu
+U.S. Virgin Islands
+Uganda
+Ukraine
+United Kingdom
+Utah
+Uzbekistan
+Vanuatu
+Venezuela
+Vietnam
+Virginia
+Wallis and Futuna
+Washington
+Wyoming
+Yemen
+Zambia
+Zimbabwe

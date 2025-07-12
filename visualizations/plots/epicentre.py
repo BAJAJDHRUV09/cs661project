@@ -2,13 +2,8 @@ import numpy as np
 import plotly.graph_objects as go
 
 def create_epicentre_impact(data_processor,
-                           earthquake_id: str,
-                           radius: float = 0) -> go.Figure:
-    """
-    Create map showing earthquake epicentre and impact zone.
-    If radius==0, use the empirical formula: 10**(0.5*M - 1.8)
-    """
-    # Get earthquake data
+                             earthquake_id: str,
+                             radius: float = 0) -> go.Figure:
     if data_processor.processed_data is None or data_processor.processed_data.empty:
         fig = go.Figure()
         fig.add_annotation(
@@ -17,13 +12,9 @@ def create_epicentre_impact(data_processor,
             x=0.5, y=0.5, showarrow=False,
             font=dict(size=16, color="gray")
         )
-        fig.update_layout(
-            title="Epicentre Impact Analysis",
-            height=500
-        )
+        fig.update_layout(title="Epicentre Impact Analysis", height=500)
         return fig
 
-    # Find the specific earthquake
     earthquake = data_processor.processed_data[
         data_processor.processed_data['ID'] == earthquake_id
     ]
@@ -36,10 +27,7 @@ def create_epicentre_impact(data_processor,
             x=0.5, y=0.5, showarrow=False,
             font=dict(size=16, color="gray")
         )
-        fig.update_layout(
-            title="Epicentre Impact Analysis",
-            height=500
-        )
+        fig.update_layout(title="Epicentre Impact Analysis", height=500)
         return fig
 
     eq = earthquake.iloc[0]
@@ -47,47 +35,50 @@ def create_epicentre_impact(data_processor,
     lon_center = eq['Longitude']
     mag = eq['mag']
 
-    # Use empirical formula if radius==0
     if not radius or radius == 0:
         radius = 10 ** (0.5 * mag - 1.8)
 
-    # Generate circle coordinates (simplified)
     angles = np.linspace(0, 2*np.pi, 100)
-    lat_circle = lat_center + (radius / 111.32) * np.cos(angles)
-    lon_circle = lon_center + (radius / (111.32 * np.cos(np.radians(lat_center)))) * np.sin(angles)
 
-    # Create map
     fig = go.Figure()
 
-    # Add impact circle
-    fig.add_trace(go.Scattermapbox(
-        lat=lat_circle,
-        lon=lon_circle,
-        mode='lines',
-        line=dict(color='red', width=2),
-        name=f'Impact Zone (~{int(radius)}km)',
-        fill='toself',
-        fillcolor='rgba(255, 0, 0, 0.1)'
-    ))
+    # Fancy concentric impact zones
+    for scale in [1.0, 0.7, 0.4]:
+        lat_circle = lat_center + (radius * scale / 111.32) * np.cos(angles)
+        lon_circle = lon_center + (radius * scale / (111.32 * np.cos(np.radians(lat_center)))) * np.sin(angles)
 
-    # Add epicentre
+        fig.add_trace(go.Scattermapbox(
+            lat=lat_circle,
+            lon=lon_circle,
+            mode='lines',
+            line=dict(width=0),
+            fill='toself',
+            fillcolor=f'rgba(255, 0, 0, {0.05 + scale * 0.1})',
+            hoverinfo='skip',
+            showlegend=False
+        ))
+
+    # Epicentre marker
     fig.add_trace(go.Scattermapbox(
         lat=[lat_center],
         lon=[lon_center],
-        mode='markers',
+        mode='markers+text',
         marker=dict(
-            size=15,
+            size=20,
             color='red',
-            symbol='star'
+            symbol='star',
+            opacity=0.9
         ),
         name='Epicentre',
-        text=[f"Magnitude: {mag}<br>Depth: {eq['depth']}km<br>Time: {eq['time']}"],
-        hoverinfo='text'
+        text=["Epicentre"],
+        textposition="top center",
+        hoverinfo='text',
+        hovertext=[f"<b>{eq['Place']}</b><br>Magnitude: {mag}<br>Depth: {eq['depth']}km<br>Time: {eq['time']}"]
     ))
 
-    # Add nearby earthquakes
+    # Nearby earthquakes within ~5° (approx)
     nearby_data = data_processor.processed_data[
-        ((data_processor.processed_data['Latitude'] - lat_center)**2 + 
+        ((data_processor.processed_data['Latitude'] - lat_center)**2 +
          (data_processor.processed_data['Longitude'] - lon_center)**2)**0.5 < 5
     ].head(50)
 
@@ -99,25 +90,34 @@ def create_epicentre_impact(data_processor,
             marker=dict(
                 size=nearby_data['mag'] * 2,
                 color=nearby_data['mag'],
-                colorscale='Reds',
+                colorscale='YlOrRd',
                 showscale=True,
-                colorbar=dict(title="Magnitude")
+                opacity=0.75,
+                colorbar=dict(title="Magnitude", titleside='top')
             ),
             name='Nearby Earthquakes',
-            text=nearby_data['Place'],
+            text=[f"{place}<br>Mag: {mag}" for place, mag in zip(nearby_data['Place'], nearby_data['mag'])],
             hoverinfo='text'
         ))
 
-    # Update layout
     fig.update_layout(
-        mapbox_style='carto-positron',
+        mapbox_style='carto-darkmatter',
         mapbox=dict(
             center=dict(lat=lat_center, lon=lon_center),
             zoom=6
         ),
-        title=f"Epicentre Impact Analysis - {eq['Place']} (Felt Radius: ~{int(radius)} km)",
-        height=500,
-        margin=dict(l=0, r=0, t=50, b=0)
+        title=dict(
+            text=f"🌋 Impact Zone - {eq['Place']} (Radius: ~{int(radius)} km)",
+            x=0.5,
+            font=dict(size=20)
+        ),
+        height=600,
+        margin=dict(l=0, r=0, t=40, b=0),
+        legend=dict(
+            bgcolor="rgba(255,255,255,0.8)",
+            bordercolor="#ccc",
+            borderwidth=1
+        )
     )
 
     return fig

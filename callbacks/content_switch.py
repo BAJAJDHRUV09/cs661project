@@ -1,8 +1,9 @@
 from dash import callback, Output, Input, callback_context
-from components.global_map import get_global_map
+from components.global_map_section import get_global_map
 from components.scatter_section import get_scatter_section
 from components.timeseries_section import get_timeseries_section
-from components.risk_map import get_risk_map
+from components.risk_map_section import get_risk_map
+from components.country_focus_section import get_country_focus_section
 import globals
 
 button_ids = globals.button_ids
@@ -21,5 +22,7 @@ def update_main_content(*args):
         return get_timeseries_section(data_processor)
     elif triggered == "btn-riskmap":
         return get_risk_map(data_processor)
+    elif ctx.triggered_id == "btn-country-focus":
+        return get_country_focus_section()
     else:
         return get_global_map()
