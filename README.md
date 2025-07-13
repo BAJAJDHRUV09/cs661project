@@ -20,15 +20,18 @@ This project creates an interactive standalone tool to explore and analyze globa
 ### Team Members & Responsibilities
 - **Data Aggregation, Cleaning & Trend Analysis**: Daksh Agrawal (230337), Jaini Patel (230494)
 - **Time Series Analysis**: Neel D Jadia (230688)
-- **Country Isolation & Zoom Interaction**: Parv Mehta (230741), Dhruv Bajaj (230365), Bipin Kumar Jaiswal (230300)
+- **Country Isolation & Zoom Interaction**: Dharajiya Yug (230362)
 - **Risk Analysis**: Chatla Sowmya Sri (200293)
-- **Epicentre Impact & Scatter Plot**: Shivanee Shrivas (230974), Dharajiya Yug (230362)
+- **Scatter Plot**: Shivanee Shrivas (230974)
+- **Global Map & Epicentre Impact**: Parv Mehta (230741), Dhruv Bajaj (230365), Bipin Kumar Jaiswal (230300) 
 
 ### Installation
 1. Clone the repository
-2. Install dependencies: `pip install -r requirements.txt`
-3. Download the earthquake dataset from Kaggle
-4. Run the application: `python app.py`
+2. Set up virtual environment: `python -m venv venv`
+3. Activate the virtual environment: `source venv/bin/activate  On macOS/Linux ` or `venv\Scripts\activate  On Windows`
+4. Install dependencies: `pip install -r requirements.txt`
+5. Download the earthquake dataset from Kaggle
+6. Run the application: `python app.py`
 
 ### Data Sources
 - All the Earthquakes Dataset (1990–2023) from Kaggle
@@ -37,11 +40,12 @@ This project creates an interactive standalone tool to explore and analyze globa
 ### Project Structure
 ```
 661_project/
-├── app.py                 # Main Dash application
-├── data/                  # Data files and processing
-├── src/                   # Source code modules
-├── assets/                # Static assets (CSS, images)
-├── notebooks/             # Jupyter notebooks for analysis
-├── requirements.txt       # Python dependencies
-└── README.md             # This file
+├── app.py            # Main Dash application 
+├── callbacks         # Folder for all Dash callback functions that handle interactivity 
+├── components        # Reusable UI components like dropdowns, graphs, sliders, etc.
+├── data/             # Folder for cleaned and processed data files (e.g., CSV, GeoJSON) 
+├── src/              # Core logic modules: data loading, preprocessing, analytics, utilities 
+├── visualizations    # Static plots, maps, or notebooks used for EDA and reporting
+├── requirements.txt  # List of required Python packages for setting up the environment
+└── README.md         # Project documentation with setup instructions and usage guide
 ``` 
