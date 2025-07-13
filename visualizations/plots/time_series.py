@@ -179,7 +179,8 @@ def create_magnitude_time_series_plot(
             y=time_series_data['avg_mag_ma'],
             mode='lines',
             name='Avg Magnitude (5Y MA)',
-            line=dict(color='#f39c12', dash='dot', width=1.5, opacity=0.7)
+            line=dict(color='#f39c12', dash='dot', width=1.5),
+            opacity=0.7
         ))
         
 
