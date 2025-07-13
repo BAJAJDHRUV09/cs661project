@@ -33,7 +33,11 @@ def create_country_focus_view(
         return fig
 
     center_coords = get_country_center(country)
-    zoom_level = get_country_zoom(country) or 4
+    if center_coords is None:
+        center_coords = (0, 0)
+        zoom_level = 1
+    else:
+        zoom_level = get_country_zoom(country)
 
     fig = px.scatter_mapbox(
         country_data,
@@ -47,7 +51,7 @@ def create_country_focus_view(
         size_max=20,
         zoom=zoom_level,
         height=500,
-        center={"lat": center_coords[0], "lon": center_coords[1]} if center_coords else None,
+        center={"lat": center_coords[0], "lon": center_coords[1]} if center_coords else {"lat": 0, "lon": 0},
         title=f"Earthquake Epicentres - {country}"
     )
 
