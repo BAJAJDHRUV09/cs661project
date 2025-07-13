@@ -3,7 +3,7 @@ from dash import html
 def get_sidebar():
     return html.Div([
         html.Div([
-            html.H3("Earthquake Analysis", style={'color': '#2c3e50', 'marginBottom': '20px'}),
+            html.H3("Earthquake Analysis", style={'color': '#2c3e50', 'marginBottom': '20px', 'marginLeft': '60px'}),
             html.Div([
                 html.H4("Select Visualization:", style={'color': '#2c3e50', 'marginBottom': '15px'}),
                 html.Div([
